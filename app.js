@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const compression = require("compression");
 const helmet = require("helmet");
+const passport = require("passport");
 const RateLimit = require("express-rate-limit");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -45,6 +46,12 @@ app.use(compression()); // Compress all routes
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
+// Pass the global passport object into the configuration function
+require("./config/passport")(passport);
+
+// This will initialize the passport object on every request
+app.use(passport.initialize());
 
 app.use(logger("dev"));
 app.use(express.json());
