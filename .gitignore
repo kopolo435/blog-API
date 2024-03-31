@@ -2,3 +2,6 @@
 /.vscode
 eslintconifg.json
 .env
+.http
+id_rsa_priv.pem
+generateKeypair.js
