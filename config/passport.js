@@ -29,4 +29,16 @@ const strategy = new JwtStrategy(options, async (payload, done) => {
 // TODO
 module.exports = (passport) => {
   passport.use(strategy);
+  passport.serializeUser((user, done) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(async (userId, done) => {
+    try {
+      const user = await User.findById(userId).exec();
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
+  });
 };

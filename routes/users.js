@@ -13,12 +13,4 @@ router.get("/register", userController.register);
 
 router.post("/login", userController.login);
 
-router.get(
-  "/admin",
-  passport.authenticate("jwt", { session: false }),
-  (req, res, next) => {
-    res.status(200).json({ success: true, msg: "You are authenticated" });
-  }
-);
-
 module.exports = router;
