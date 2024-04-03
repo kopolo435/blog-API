@@ -11,4 +11,10 @@ router.post(
   postController.publish_new_post
 );
 
+router.post(
+  "/save",
+  passport.authenticate("jwt", { session: false }),
+  postController.save_post
+);
+
 module.exports = router;
