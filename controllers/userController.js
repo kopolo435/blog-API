@@ -4,6 +4,7 @@ const { body, validationResult } = require("express-validator");
 const {
   isUsernameInUse,
   validateConfirmPassword,
+  isEmailInUse,
 } = require("../lib/customValidator");
 const User = require("../models/user");
 const { issueJWT } = require("../lib/utils");
@@ -16,6 +17,14 @@ module.exports.register = [
     .withMessage("El nombre de usuario debe tener entre 1 y 30 caracteres")
     .custom(isUsernameInUse)
     .withMessage("El nombre de usuario escogido, ya se encuentra registrado"),
+  body("email")
+    .trim()
+    .escape()
+    .isLength({ min: 1 })
+    .withMessage("Debe ingresar un correo")
+    .withMessage("Error, debe introducir un correo electronico valido")
+    .custom(isEmailInUse)
+    .withMessage("Error, el correo ya se encuentra en uso"),
   body("password")
     .escape()
     .isLength({ min: 1 })
