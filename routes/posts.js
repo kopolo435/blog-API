@@ -17,4 +17,10 @@ router.post(
   postController.save_post
 );
 
+router.put(
+  "/:id/edit",
+  passport.authenticate("jwt", { session: false }),
+  postController.edit_post
+);
+
 module.exports = router;
