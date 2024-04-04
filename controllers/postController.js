@@ -140,5 +140,17 @@ module.exports.get_post = asyncHandler(async (req, res, next) => {
   }
   return res
     .status(200)
-    .json({ succes: true, msg: "Post find succesfully", post: post._doc });
+    .json({ success: true, msg: "Post find succesfully", post: post._doc });
+});
+
+module.exports.get_published_posts = asyncHandler(async (req, res, next) => {
+  const postList = await Post.find({ is_published: true })
+    .sort({ published_date: -1 })
+    .exec();
+
+  return res.status(200).json({
+    success: true,
+    msg: "Posts list retrieved successfully",
+    postList,
+  });
 });

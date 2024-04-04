@@ -5,6 +5,8 @@ const postController = require("../controllers/postController");
 
 const router = express.Router();
 
+router.get("/", postController.get_published_posts);
+
 router.post(
   "/publish",
   passport.authenticate("jwt", { session: false }),
