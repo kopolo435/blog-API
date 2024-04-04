@@ -129,3 +129,16 @@ module.exports.edit_post = [
     }
   }),
 ];
+
+module.exports.get_post = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.body.postId).exec();
+
+  if (!post) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "Could not find a post with the given id" });
+  }
+  return res
+    .status(200)
+    .json({ succes: true, msg: "Post find succesfully", post: post._doc });
+});
