@@ -102,3 +102,20 @@ module.exports.login = [
     });
   }),
 ];
+
+module.exports.register_admin = [
+  body("adminCode").trim().escape().equals("12345678"),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, msg: "Invalid code" });
+    }
+
+    req.user.is_admin = true;
+    await User.findByIdAndUpdate(req.user.id, req.user);
+    return res
+      .status(200)
+      .json({ success: true, msg: "User given admin rights" });
+  }),
+];

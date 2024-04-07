@@ -13,4 +13,10 @@ router.post("/register", userController.register);
 
 router.post("/login", userController.login);
 
+router.post(
+  "/register-admin",
+  passport.authenticate("jwt", { session: false }),
+  userController.register_admin
+);
+
 module.exports = router;
