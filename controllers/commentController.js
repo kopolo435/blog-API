@@ -42,3 +42,10 @@ module.exports.new_comment = [
       .json({ success: true, msg: "Commend added succesfully", comment });
   }),
 ];
+
+module.exports.delete_comment = asyncHandler(async (req, res, next) => {
+  await Comment.findByIdAndDelete(req.params.commentId);
+  return res
+    .status(200)
+    .json({ success: true, msg: "Comment deleted succesfully" });
+});
