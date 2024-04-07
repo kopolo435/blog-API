@@ -100,9 +100,6 @@ module.exports.edit_post = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("Debe ingresar el contenido del post"),
-  body("postId")
-    .isLength({ min: 1 })
-    .withMessage("Debe ingresar el id del post a editar"),
   body("isPublished")
     .isLength({ min: 1 })
     .withMessage("Debe colocar el estado de publicacion"),
@@ -120,7 +117,7 @@ module.exports.edit_post = [
     const date = new Date();
 
     const post = new Post({
-      _id: req.body.postId,
+      _id: req.params.id,
       title: req.body.title,
       content: req.body.content,
       author: req.user._id,
@@ -128,7 +125,7 @@ module.exports.edit_post = [
       is_published: req.body.isPublished === "true",
     });
     try {
-      await Post.findByIdAndUpdate(req.body.postId, post);
+      await Post.findByIdAndUpdate(req.params.id, post);
       res.status(200).json({ success: true, msg: "Post updated succesfully" });
     } catch (err) {
       res.status(500).json({ success: false, msg: "Post failed to update" });
@@ -137,7 +134,7 @@ module.exports.edit_post = [
 ];
 
 module.exports.get_post = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.body.postId).exec();
+  const post = await Post.findById(req.params.id).exec();
 
   if (!post) {
     return res
