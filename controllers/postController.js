@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const Post = require("../models/post");
+const Comment = require("../models/comment");
+const deleteComments = require("../lib/deleteComments");
 
 module.exports.publish_new_post = [
   body("title")
@@ -157,4 +159,15 @@ module.exports.get_published_posts = asyncHandler(async (req, res, next) => {
     msg: "Posts list retrieved successfully",
     postList,
   });
+});
+
+module.exports.delete_post = asyncHandler(async (req, res, next) => {
+  const postComments = await Comment.find({ post_parent: req.params.id });
+  await Promise.all([
+    Post.findByIdAndDelete(req.params.id),
+    deleteComments(postComments),
+  ]);
+  return res
+    .status(200)
+    .json({ success: true, msg: "Post and comments deleted successfully" });
 });
