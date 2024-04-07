@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const deleteComments = require("../lib/deleteComments");
+const getCommentReplies = require("../lib/repliesComments");
 
 module.exports.publish_new_post = [
   body("title")
@@ -44,7 +45,9 @@ module.exports.publish_new_post = [
     }
 
     await post.save();
-    res.status(200).json({ success: true, msg: "New post published" });
+    res
+      .status(200)
+      .json({ success: true, msg: "New post published", post: post._doc });
   }),
 ];
 
@@ -83,7 +86,11 @@ module.exports.save_post = [
     });
 
     await post.save();
-    res.status(200).json({ success: true, msg: "Post saved as unpublished" });
+    res.status(200).json({
+      success: true,
+      msg: "Post saved as unpublished",
+      post: post._doc,
+    });
   }),
 ];
 
@@ -126,7 +133,11 @@ module.exports.edit_post = [
     });
     try {
       await Post.findByIdAndUpdate(req.params.id, post);
-      res.status(200).json({ success: true, msg: "Post updated succesfully" });
+      res.status(200).json({
+        success: true,
+        msg: "Post updated succesfully",
+        post: post._doc,
+      });
     } catch (err) {
       res.status(500).json({ success: false, msg: "Post failed to update" });
     }
@@ -143,7 +154,7 @@ module.exports.get_post = asyncHandler(async (req, res, next) => {
   }
   return res
     .status(200)
-    .json({ success: true, msg: "Post find succesfully", post: post._doc });
+    .json({ success: true, msg: "Post found succesfully", post: post._doc });
 });
 
 module.exports.get_published_posts = asyncHandler(async (req, res, next) => {
@@ -171,11 +182,10 @@ module.exports.delete_post = asyncHandler(async (req, res, next) => {
 
 module.exports.get_post_comments = asyncHandler(async (req, res, next) => {
   const postComments = await Comment.find({ post_parent: req.params.id });
-  return res
-    .status(200)
-    .json({
-      success: true,
-      msg: "Post comments retrieved successfully",
-      postComments,
-    });
+  const postCommentsWithChildren = await getCommentReplies(postComments);
+  return res.status(200).json({
+    success: true,
+    msg: "Post comments retrieved successfully",
+    postComments: postCommentsWithChildren,
+  });
 });
