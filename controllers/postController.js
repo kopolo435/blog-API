@@ -34,7 +34,7 @@ module.exports.publish_new_post = [
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      author: req.user._id,
+      author: req.user.id,
       published_date: date,
       is_published: true,
     });
@@ -80,7 +80,7 @@ module.exports.save_post = [
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      author: req.user._id,
+      author: req.user.id,
       last_edit: date,
       is_published: false,
     });
@@ -170,9 +170,11 @@ module.exports.get_published_posts = asyncHandler(async (req, res, next) => {
 });
 
 module.exports.delete_post = asyncHandler(async (req, res, next) => {
-  const postComments = await Comment.find({ post_parent: req.params.id });
+  const postComments = await Comment.find({
+    post_parent: req.params.id,
+  }).exec();
   await Promise.all([
-    Post.findByIdAndDelete(req.params.id),
+    Post.findByIdAndDelete(req.params.id).exec(),
     deleteComments(postComments),
   ]);
   return res
@@ -181,7 +183,9 @@ module.exports.delete_post = asyncHandler(async (req, res, next) => {
 });
 
 module.exports.get_post_comments = asyncHandler(async (req, res, next) => {
-  const postComments = await Comment.find({ post_parent: req.params.id });
+  const postComments = await Comment.find({
+    post_parent: req.params.id,
+  }).exec();
   const postCommentsWithChildren = await getCommentReplies(postComments);
   return res.status(200).json({
     success: true,
