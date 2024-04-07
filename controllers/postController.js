@@ -33,9 +33,13 @@ module.exports.publish_new_post = [
       content: req.body.content,
       author: req.user._id,
       published_date: date,
-      last_edit: date,
       is_published: true,
     });
+    if (req.body.lasEdit) {
+      post.last_edit = req.body.lasEdit;
+    } else {
+      post.last_edit = date;
+    }
 
     await post.save();
     res.status(200).json({ success: true, msg: "New post published" });
