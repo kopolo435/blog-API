@@ -168,3 +168,14 @@ module.exports.delete_post = asyncHandler(async (req, res, next) => {
     .status(200)
     .json({ success: true, msg: "Post and comments deleted successfully" });
 });
+
+module.exports.get_post_comments = asyncHandler(async (req, res, next) => {
+  const postComments = await Comment.find({ post_parent: req.params.id });
+  return res
+    .status(200)
+    .json({
+      success: true,
+      msg: "Post comments retrieved successfully",
+      postComments,
+    });
+});

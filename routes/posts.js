@@ -33,4 +33,6 @@ router.delete(
   postController.delete_post
 );
 
+router.get("/:id/comments", postController.get_post_comments);
+
 module.exports = router;
