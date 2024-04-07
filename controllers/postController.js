@@ -127,7 +127,7 @@ module.exports.edit_post = [
       _id: req.params.id,
       title: req.body.title,
       content: req.body.content,
-      author: req.user._id,
+      author: req.user.id,
       last_edit: date,
       is_published: req.body.isPublished === "true",
     });
